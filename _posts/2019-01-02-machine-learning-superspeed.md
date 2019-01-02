@@ -15,10 +15,10 @@ Small group of Solita employees visited Amazon London office last November and p
 
 ## AWS SageMaker
 
-SageMaker is an Amazon service that is designed to build, train and deploy machine learning models easily. For each step there are tools and functions which makes implementing the pipeline much faster. All the work is done in Jupyter Notebook, which have pre-installed Anaconda packages and libraries for for example Tensorflow. One can easily access data in their S3 buckets, too, from SageMaker notebooks. SageMaker also has multiple example notebooks so that getting started is very easy.
+SageMaker is an Amazon service that is designed to build, train and deploy machine learning models easily. For each step there are tools and functions which makes implementing the pipeline much faster. All the work is done in Jupyter Notebook, which has pre-installed Anaconda packages and libraries for for example Tensorflow. One can also easily access data in their S3 buckets from SageMaker notebooks. SageMaker also has multiple example notebooks so that getting started is very easy.
 
 ### Dataset
-In the example snippets I use [MNIST dataset](https://www.kaggle.com/datamunge/sign-language-mnist) which contains labeled pictures of alphabets in sign language. They are 28x28 grey-scale pictures, which means each pixels contains integer between 0 and 255. Training data contains 27 455 pictures and test data 7127 pictures and they're stored in S3.
+In the example snippets I use [MNIST dataset](https://www.kaggle.com/datamunge/sign-language-mnist) which contains labeled pictures of alphabets in sign language. They are 28x28 grey-scale pictures, which means each pixels contains integer between 0 and 255. Training data contains 27 455 pictures and test data 7 127 pictures and they're stored in S3.
 
 For importing and exploring the dataset I simply use pandas libraries. Pandas is able to read data straight from S3 bucket:
 
@@ -66,7 +66,7 @@ convert_and_upload(pixels_train, labels_train, bucket, 'sign_mnist_train_rec')
 Of course, in this case the data is very clean already and usually a lot more work needs to be done in order to explore and clean the data properly, before uploading it back to for example S3. This is part where SageMaker doesn't really provide additional help, which is very understandable.
 
 ### Train
-Now that data is cleaned and we can either use SageMaker built-in algorithms or use our own, maybe provided by sklearn or some other library. For yusing other than SageMaker built-in algorithms you would have to provide a Docker container for the training and validation tasks. More information about it can be found in [SageMaker documentation](https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-training-algo.html). In this case as we want to recognise alphabets from the pictures we use k-Nearest Neighbors -algorithm. It is one of the built-in algorithms in SageMaker, and can be used with very few lines of code:
+Now that data is cleaned we can either use SageMaker built-in algorithms or use our own, maybe provided by sklearn or some other library. For using other than SageMaker built-in algorithms you would have to provide a Docker container for the training and validation tasks. More information about it can be found in [SageMaker documentation](https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-training-algo.html). In this case as we want to recognise alphabets from the pictures we use k-Nearest Neighbors -algorithm. It is one of the built-in algorithms in SageMaker, and can be used with very few lines of code:
 
 ```python
 knn=sagemaker.estimator.Estimator(get_image_uri(boto3.Session().region_name, "knn"),
@@ -136,3 +136,5 @@ b'{"predictions": [{"predicted_label": 6.0}, {"predicted_label": 3.0}, {"predict
 ```
 
 because the file contained five pictures. In real life case if we wanted to provide interface for making real-time predictions we could use API Gateway and Lambda function. Lambda function can use boto3 library to connect to the created endpoint and get prediction. In API gateway we can setup API that calls lambda function once it gets a POST request and returns the prediction in response.
+
+![Process picture](/img/aws-sagemaker-example/sagemakerjobbox1.png)
